@@ -23,7 +23,7 @@ The `id` property of a person config should be like the following:
 
 In a person config, use type `mattermost` to specify a `Mattermostable`
 
-## Mattermostable Persno Config Example
+## Mattermostable Person Config Example
 
 ```json
 {
