@@ -100,7 +100,3 @@ class Mattermostable extends EventEmitter {
 }
 module.exports.Mattermostable = Mattermostable
 
-const connor = new Mattermostable('connorturland@https://chat.holochain.org')
-connor.listen(text => console.log(text))
-connor.speak('hey!')
-
