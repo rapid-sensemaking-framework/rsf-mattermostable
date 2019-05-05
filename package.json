@@ -1,0 +1,21 @@
+{
+  "name": "rsf-mattermostable",
+  "version": "0.0.1",
+  "description": "a module for exposing a very super simple API for sending/receiving mattermost messages as an eventemitter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rapid-sensemaking-framework/rsf-mattermostable.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "isomorphic-fetch": "^2.2.1",
+    "mattermost-redux": "Connoropolous/mattermost-redux",
+    "ws": "^5.0.0"
+  }
+}
