@@ -7,15 +7,7 @@ const Client4 = require('mattermost-redux/client/client4').default
 const WsClient = require('mattermost-redux/client/websocket_client').default
 const url = require('url')
 
-// we only need, and should have, one bot per mattermost server
-// so keep track of them in memory
-const mattermostBots = {}
-
 const findOrCreateClients = async (mattermostServerUrl, botEmail, botPassword) => {
-
-    if (mattermostBots[mattermostServerUrl]) {
-        return mattermostBots[mattermostServerUrl]
-    }
 
     const webClient = new Client4()
     webClient.setUrl(mattermostServerUrl)
@@ -35,8 +27,6 @@ const findOrCreateClients = async (mattermostServerUrl, botEmail, botPassword) =
         webClient,
         botId: id
     }
-
-    mattermostBots[mattermostServerUrl] = clients
 
     return clients
 }

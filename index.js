@@ -1,5 +1,6 @@
 const EventEmitter = require('events') // nodejs native import
 
+const trickle = require('timetrickle')
 const { findOrCreateClients } = require('./mattermostClients')
 
 // this key will be also used by other classes that implement the "Contactable"
@@ -22,12 +23,31 @@ const getDetailsForServer = (mattermostServerUrl) => {
     return { email, password }
 }
 
-const getClients = async (mattermostServerUrl) => {
+// cache the promises so that
+// we only end up with a single client per server
+// so that we can effectively rate limit the messages
+const mattermostBots = {}
+const getClients = (mattermostServerUrl) => {
+
+    if (mattermostBots[mattermostServerUrl]) {
+        return mattermostBots[mattermostServerUrl]
+    }
+
     // get details from the environment variable
     // for the specific chat server they're on
     // assuming they exist
     const { email, password } = getDetailsForServer(mattermostServerUrl)
-    return await findOrCreateClients(mattermostServerUrl, email, password)
+    mattermostBots[mattermostServerUrl] = findOrCreateClients(mattermostServerUrl, email, password).then(clients => {
+        // limit to a max of 1 message per second
+        const limit = trickle(1, 1000)
+        clients.webClient.createPostTrickle = (data) => {
+            limit(() => {
+                clients.webClient.createPost(data)
+            })
+        }
+        return clients
+    })
+    return mattermostBots[mattermostServerUrl]
 }
 
 
@@ -88,7 +108,7 @@ class Mattermostable extends EventEmitter {
         const [username, mattermostServerUrl] = this.id.split('@')
         const { webClient, botId } = await getClients(mattermostServerUrl)
         const channelId = await setupChannelAndGetId(username, webClient, botId)
-        webClient.createPost({ message: string, channel_id: channelId })
+        webClient.createPostTrickle({ message: string, channel_id: channelId })
     }
 
     listen(callback) {
