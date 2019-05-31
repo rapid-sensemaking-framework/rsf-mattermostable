@@ -13,6 +13,25 @@ then just contact the rsf-runner admin and give them the email address and passw
 
 - `MATTERMOST_BOT_DETAILS`  : `String`, should look like https://chat.server.url.org@@chatbotemail@whatever.com@@chatbotpassword@@@...
 
+## Formatting of `id`
+
+The `id` property of a person config should be like the following:
+
+`username@https://chat.server.url.org`
+
+## Associated `type` configuration
+
+In a person config, use type `mattermost` to specify a `Mattermostable`
+
+## Mattermostable Person Config Example
+
+```json
+{
+  "type": "mattermost",
+  "id": "philip123@https://chat.server.url.org
+}
+```
+
 ## API
 
 __`Mattermostable`__
