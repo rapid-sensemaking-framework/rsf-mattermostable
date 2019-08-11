@@ -13,9 +13,10 @@ module.exports.STANDARD_EVENT_KEY = STANDARD_EVENT_KEY
 const TYPE_KEY = 'mattermost'
 module.exports.TYPE_KEY = TYPE_KEY
 
-// import environment variables
-// MATTERMOST_BOT_DETAILS = https://chat.server.url.org@@chatbotemail@whatever.com@@chatbotpassword@@@...
-const botDetails = process.env.MATTERMOST_BOT_DETAILS
+let botDetails = ''
+module.exports.setBotDetails = (details) => {
+    botDetails = details
+}
 
 const getDetailsForServer = (mattermostServerUrl) => {
     const server = botDetails.split("@@@").find(s => s.indexOf(mattermostServerUrl === 0))

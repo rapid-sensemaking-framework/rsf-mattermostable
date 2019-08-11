@@ -9,10 +9,6 @@ then just contact the rsf-runner admin and give them the email address and passw
 ## Installation
 `npm install --save rsf-mattermostable`
 
-## environment variables
-
-- `MATTERMOST_BOT_DETAILS`  : `String`, should look like https://chat.server.url.org@@chatbotemail@whatever.com@@chatbotpassword@@@...
-
 ## Formatting of `id`
 
 The `id` property of a person config should be like the following:
@@ -33,6 +29,12 @@ In a person config, use type `mattermost` to specify a `Mattermostable`
 ```
 
 ## API
+
+__`setBotDetails`__
+
+`setBotDetails(details)`: a function used to set the bot details for all the different servers it may use
+
+`details`: should look like https://chat.server.url.org@@chatbotemail@whatever.com@@chatbotpassword@@@...
 
 __`Mattermostable`__
 
