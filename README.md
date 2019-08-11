@@ -30,9 +30,9 @@ In a person config, use type `mattermost` to specify a `Mattermostable`
 
 ## API
 
-__`setBotDetails`__
+__`init`__
 
-`setBotDetails(details)`: a function used to set the bot details for all the different servers it may use
+`init(details)`: a function used to set the bot details for all the different servers it may use
 
 `details`: should look like https://chat.server.url.org@@chatbotemail@whatever.com@@chatbotpassword@@@...
 

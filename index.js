@@ -14,7 +14,7 @@ const TYPE_KEY = 'mattermost'
 module.exports.TYPE_KEY = TYPE_KEY
 
 let botDetails = ''
-module.exports.setBotDetails = (details) => {
+module.exports.init = (details) => {
     botDetails = details
 }
 
