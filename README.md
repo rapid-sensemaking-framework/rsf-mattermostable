@@ -56,3 +56,7 @@ ___
 `listen(callback)`: Handle a message from the person represented by the Mattermostable, received as a simple string
 
 `callback(string)`: `Function`, give a function which will be called whenever a message from the person is received
+
+___
+
+`stopListening()`: Remove all event listeners

@@ -118,6 +118,10 @@ class Mattermostable extends EventEmitter {
         // but not bothering to expose it
         this.on(STANDARD_EVENT_KEY, callback)
     }
+
+    stopListening() {
+        this.removeAllListeners()
+    }
 }
 module.exports.Mattermostable = Mattermostable
 
