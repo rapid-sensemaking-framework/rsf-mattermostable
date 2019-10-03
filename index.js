@@ -1,6 +1,4 @@
 const EventEmitter = require('events') // nodejs native import
-
-const trickle = require('timetrickle')
 const { findOrCreateClients } = require('./mattermostClients')
 
 // this key will be also used by other classes that implement the "Contactable"
@@ -13,44 +11,38 @@ module.exports.STANDARD_EVENT_KEY = STANDARD_EVENT_KEY
 const TYPE_KEY = 'mattermost'
 module.exports.TYPE_KEY = TYPE_KEY
 
-let botDetails = ''
-module.exports.init = (details) => {
-    botDetails = details
-}
-
-const getDetailsForServer = (mattermostServerUrl) => {
-    const server = botDetails.split("@@@").find(s => s.indexOf(mattermostServerUrl === 0))
-    const [url, email, password] = server.split("@@")
-    return { email, password }
-}
-
-// cache the promises so that
-// we only end up with a single client per server
-// so that we can effectively rate limit the messages
-const mattermostBots = {}
-const getClients = (mattermostServerUrl) => {
-
-    if (mattermostBots[mattermostServerUrl]) {
-        return mattermostBots[mattermostServerUrl]
-    }
-
-    // get details from the environment variable
-    // for the specific chat server they're on
-    // assuming they exist
-    const { email, password } = getDetailsForServer(mattermostServerUrl)
-    mattermostBots[mattermostServerUrl] = findOrCreateClients(mattermostServerUrl, email, password).then(clients => {
-        // limit to a max of 1 message per second
-        const limit = trickle(1, 1000)
-        clients.webClient.createPostTrickle = (data) => {
-            limit(() => {
-                clients.webClient.createPost(data)
-            })
-        }
-        return clients
+let mattermostBots = {}
+const init = (servers) => {
+    console.log('initializing rsf-mattermostable')
+    servers.split("@@@").forEach(server => {
+        const [url, email, password] = server.split("@@")
+        // cache the promises so that
+        // we only end up with a single client per server
+        // so that we can effectively rate limit the messages
+        mattermostBots[url] = findOrCreateClients(url, email, password)
     })
+    const promises = Object.keys(mattermostBots).map(key => mattermostBots[key])
+    return Promise.all(promises)
+}
+module.exports.init = init
+
+const shutdown = async () => {
+    console.log('shutting down rsf-mattermostable')
+    // shutdown mattermost bots
+    const promises = Object.keys(mattermostBots).map(async mattermostServerUrl => {
+        const { wsClient } = await getClients(mattermostServerUrl)
+        console.log('closing ws connection to ' + mattermostServerUrl)
+        wsClient.close()
+    })
+    return Promise.all(promises).then(() => {
+        mattermostBots = {}
+    })
+}
+module.exports.shutdown = shutdown
+
+const getClients = (mattermostServerUrl) => {
     return mattermostBots[mattermostServerUrl]
 }
-
 
 const setupChannelAndGetId = async (username, webClient, botId) => {
     // open a channel for sending messages
@@ -109,7 +101,7 @@ class Mattermostable extends EventEmitter {
         const [username, mattermostServerUrl] = this.id.split('@')
         const { webClient, botId } = await getClients(mattermostServerUrl)
         const channelId = await setupChannelAndGetId(username, webClient, botId)
-        webClient.createPostTrickle({ message: string, channel_id: channelId })
+        webClient.createPost({ message: string, channel_id: channelId })
     }
 
     listen(callback) {

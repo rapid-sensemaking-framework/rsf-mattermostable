@@ -16,7 +16,6 @@
     "babel-polyfill": "^6.26.0",
     "isomorphic-fetch": "^2.2.1",
     "mattermost-redux": "Connoropolous/mattermost-redux",
-    "timetrickle": "^0.1.2",
     "ws": "^5.0.0"
   }
 }
