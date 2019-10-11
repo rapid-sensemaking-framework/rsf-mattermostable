@@ -32,7 +32,7 @@ const shutdown = async () => {
     const promises = Object.keys(mattermostBots).map(async mattermostServerUrl => {
         const { wsClient } = await getClients(mattermostServerUrl)
         console.log('closing ws connection to ' + mattermostServerUrl)
-        wsClient.close()
+        wsClient.close(true) // true for DONT RECONNECT
     })
     return Promise.all(promises).then(() => {
         mattermostBots = {}
