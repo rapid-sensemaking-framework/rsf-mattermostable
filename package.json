@@ -1,6 +1,6 @@
 {
   "name": "rsf-mattermostable",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "a module for exposing a very super simple API for sending/receiving mattermost messages as an eventemitter",
   "main": "index.js",
   "scripts": {
